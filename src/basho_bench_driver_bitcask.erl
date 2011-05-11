@@ -85,7 +85,17 @@ run(put, KeyGen, ValueGen, State) ->
             {ok, State1};
         {error, Reason} ->
             {error, Reason}
+    end;
+
+run(delete, KeyGen, _ValueGen, State) ->
+    State1 = maybe_sync(State),
+    case bitcask:delete(State1#state.file, KeyGen()) of
+        ok ->
+            {ok, State1};
+        {error, Reason} ->
+            {error, Reason}
     end.
+
 
 
 
