@@ -77,7 +77,7 @@ init([SupChild, Id]) ->
 
     %% Pull all config settings from environment
     Driver  = basho_bench_config:get(driver),
-    Ops     = ops_tuple(),
+    Ops     = ops_tuple(Id),
 
     %% Finally, initialize key and value generation. We pass in our ID to the
     %% initialization to enable (optional) key/value space partitioning
@@ -171,8 +171,16 @@ stop_worker(SupChild) ->
 %%
 %% Expand operations list into tuple suitable for weighted, random draw
 %%
-ops_tuple() ->
-    Ops = [lists:duplicate(Count, Op) || {Op, Count} <- basho_bench_config:get(operations)],
+ops_tuple(Id) ->
+    InstanceFreqs =
+        case basho_bench_config:get(instance_freq,undefined) of
+        undefined ->
+            basho_bench_config:get(operations);
+        Freqs ->
+            proplists:get_value(Id, Freqs)
+        end,
+
+    Ops = [lists:duplicate(Count, Op) || {Op, Count} <- InstanceFreqs ],
     list_to_tuple(lists:flatten(Ops)).
 
 
