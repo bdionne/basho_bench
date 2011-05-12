@@ -11,7 +11,6 @@
              basho_bench_driver_riakc_pb,
              basho_bench_driver_riakclient,
              basho_bench_driver_cassandra,
-             basho_bench_driver_bitcask,
              basho_bench_driver_hibari,
              basho_bench_driver_null,
              basho_bench_log,
