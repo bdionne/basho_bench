@@ -101,6 +101,7 @@ wait_for_stop(Mref, DurationMins) ->
             ?CONSOLE("Test stopped: ~p\n", [Info])
 
     after Duration ->
+            basho_bench_worker:stop(basho_bench_sup:workers()),
             basho_bench_app:stop(),
             ?CONSOLE("Test completed after ~p mins.\n", [DurationMins])
     end.

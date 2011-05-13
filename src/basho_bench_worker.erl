@@ -120,7 +120,14 @@ init([SupChild, Id]) ->
 
 handle_call(run, _From, State) ->
     State#state.worker_pid ! run,
+    {reply, ok, State};
+
+handle_call(stop, _From, State) ->
+    State#state.worker_pid ! stop,
     {reply, ok, State}.
+
+
+
 
 handle_cast(run, State) ->
     State#state.worker_pid ! run,
@@ -263,6 +270,9 @@ needs_shutdown(State) ->
     receive
         {'EXIT', Parent, _Reason} ->
             %% Give the driver a chance to cleanup
+            (catch (State#state.driver):terminate(normal, State#state.driver_state)),
+            true;
+        stop ->
             (catch (State#state.driver):terminate(normal, State#state.driver_state)),
             true
     after 0 ->
